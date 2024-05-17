@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button"
 import { getAllCharacters } from "@/components/services/Character"
 import { DataTablePagination } from "./table-pagination"
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation"
+import SearchInput from "./input-search"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -54,20 +55,6 @@ export function DataTable<TData, TValue>({
     const [pageSize, setPageSize] = useState(searchParams.get('limit') ? Number(searchParams.get('limit')) : 10)
     const [totalResults, setTotalResults] = useState(0)
     const [totalPages, setTotalPages] = useState(0)
-
-
-    // useEffect(() => {
-
-    //     getAllCharacters({ limit: pageSize, offset: offSet }).then((response) => {
-    //         const params = new URLSearchParams(searchParams)
-    //         params.set('limit', pageSize.toString())
-    //         params.set('offset', offSet.toString())
-    //         replace(`${pathname}?${params.toString()}`)
-    //         setCharacters(response.results)
-    //         setTotalResults(response.total)
-    //         setTotalPages(response.total / response.limit)
-    //     })
-    // }, [offSet])
 
     const table = useReactTable({
         data,
@@ -95,6 +82,9 @@ export function DataTable<TData, TValue>({
                         table.getColumn("name")?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
+                />
+                <SearchInput
+                    placeholder="Filter names..."
                 />
             </div>
             <DropdownMenu>
