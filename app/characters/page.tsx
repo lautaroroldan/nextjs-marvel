@@ -1,14 +1,6 @@
-import { getAllCharacters } from "@/components/services/Character"
-import { Payment, columns } from "./columns"
-import { DataTable } from "../data-table"
+import CharacterTable from "./characters-table"
 
-async function getCharacteres(offset: number, limit: number): Promise<any> {
-    const characters = await getAllCharacters({ offset, limit })
-    console.log(characters)
-    return characters?.results ?? []
-}
-
-export default async function DemoPage({
+export default async function CharactersPage({
     searchParams,
 }: {
     searchParams?: {
@@ -16,13 +8,10 @@ export default async function DemoPage({
         query?: string
     }
 }) {
-    const currentPage = Number(searchParams?.page) || 1
-    const query = searchParams?.query || ""
-    const data = await getCharacteres(currentPage, 10)
 
     return (
-        <div className="container mx-auto py-10">
-            <DataTable columns={columns} data={data} />
+        <div className="mx-auto py-10">
+            <CharacterTable page={Number(searchParams?.page)} query={searchParams?.query ?? ''} />
         </div>
     )
 }

@@ -1,17 +1,28 @@
-import { Table } from "@tanstack/react-table"
+'use client'
 
 import { Button } from "@/components/ui/button"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react"
 
 interface DataTablePaginationProps {
 }
+
+interface ButtonPaginationProps {
+    variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | null | undefined
+    className?: string
+    onClick: () => void
+    children: React.ReactNode
+}
+
+const ButtonPagination = ({ variant = "ghost", className = "p-2 px-3", onClick, children }: ButtonPaginationProps) => (
+    <Button
+        variant={variant}
+        className={className}
+        onClick={onClick}
+    >
+        {children}
+    </Button>
+)
 
 export function DataTablePagination({
 }: DataTablePaginationProps) {
@@ -19,43 +30,27 @@ export function DataTablePagination({
     const pathname = usePathname()
     const { replace } = useRouter()
     return (
-        <div className="flex items-center justify-between px-2">
-            <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-                Page {Number(searchParams.get('offset')) + 1}
-            </div>
-            <div className="flex items-center space-x-2">
-                <Button
-                    variant="outline"
-                    className="p-2 lg:flex"
-                    onClick={() => replace(`${pathname}?offset=0`)}
-                // disabled={!table.getCanPreviousPage()}
+        <div className="flex justify-center">
+            <div className="flex items-center space-x-2 self-center">
+                <ButtonPagination
+                    onClick={() => replace(`${pathname}?offset=${Number(searchParams.get('offset')) - 10}`)}
                 >
-                    <span>Go to first page</span>
-                </Button>
-                <Button
-                    variant="outline"
-                    className="p-2"
-                    onClick={() => replace(`${pathname}?offset=${Number(searchParams.get('offset')) - 1}`)}
-                // disabled={!table.getCanPreviousPage()}
-                >
-                    <span>Go to previous page</span>
-                </Button>
-                <Button
-                    variant="outline"
-                    className="p-2"
+                    <span className="flex items-center">
+                        <IconChevronLeft size={14} stroke={2} />
+                        Previous
+                    </span>
+                </ButtonPagination>
+                <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+                    Page {Number(searchParams.get('offset')) + 1}
+                </div>
+                <ButtonPagination
                     onClick={() => replace(`${pathname}?offset=${Number(searchParams.get('offset')) + 10}`)}
-                // disabled={!table.getCanNextPage()}
                 >
-                    <span >Go to next page</span>
-                </Button>
-                {/* <Button
-                    variant="outline"
-                    className="hidden h-8 w-8 p-0 lg:flex"
-                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                    disabled={!table.getCanNextPage()}
-                >
-                    <span className="sr-only">Go to last page</span>
-                </Button> */}
+                    <span className="flex items-center">
+                        Next
+                        <IconChevronRight size={14} stroke={2} />
+                    </span>
+                </ButtonPagination>
             </div>
         </div>
     )

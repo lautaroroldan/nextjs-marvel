@@ -2,27 +2,32 @@
 
 import { Input } from "@/components/ui/input"
 import { useSearchParams, usePathname, useRouter } from "next/navigation"
+import { useDebouncedCallback } from "use-debounce"
+
+const DEBOUNCE_TIME = 300
 
 export default function SearchInput({ placeholder }: { placeholder: string }) {
     const searchParams = useSearchParams()
     const pathName = usePathname()
     const { replace } = useRouter()
-    function handleSearch(e: string) {
+
+    const handleSearch = useDebouncedCallback((e: string) => {
         const params = new URLSearchParams(searchParams)
         if (e) {
-            params.set('search', e)
+            params.set('query', e)
         }
         else {
-            params.delete('search')
+            params.delete('query')
         }
         replace(`${pathName}?${params.toString()}`)
-    }
+    }, DEBOUNCE_TIME)
 
     return (
         <Input
             placeholder={placeholder}
-            className="w-full"
+            className="max-w-sm focus-visible:ring-0"
             onChange={(e) => handleSearch(e.target.value)}
+            defaultValue={searchParams.get('query') || ""}
         />
     )
 }

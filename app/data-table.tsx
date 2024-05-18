@@ -20,19 +20,9 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
-import { Input } from "@/components/ui/input"
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { getAllCharacters } from "@/components/services/Character"
+import { useState } from "react"
 import { DataTablePagination } from "./table-pagination"
-import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import SearchInput from "./input-search"
 
 interface DataTableProps<TData, TValue> {
@@ -45,14 +35,11 @@ export function DataTable<TData, TValue>({
     columns,
     data,
 }: DataTableProps<TData, TValue>) {
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [characters, setCharacters] = useState([])
     const searchParams = useSearchParams()
     const pathname = usePathname()
     const { replace } = useRouter()
-    const [offSet, setOffSet] = useState(searchParams.get('offset') ? Number(searchParams.get('offset')) : 0)
-    const [pageSize, setPageSize] = useState(searchParams.get('limit') ? Number(searchParams.get('limit')) : 10)
+
     const [totalResults, setTotalResults] = useState(0)
     const [totalPages, setTotalPages] = useState(0)
 
@@ -60,64 +47,24 @@ export function DataTable<TData, TValue>({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        onColumnFiltersChange: setColumnFilters,
         getPaginationRowModel: getPaginationRowModel(),
         manualPagination: true,
         getFilteredRowModel: getFilteredRowModel(),
         pageCount: totalPages,
-        state: {
-            columnFilters,
-            columnVisibility,
-        },
-        onColumnVisibilityChange: setColumnVisibility,
     })
 
     return (
         <div>
-            <div className="flex items-center py-4">
-                <Input
-                    placeholder="Filter names..."
-                    value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) =>
-                        table.getColumn("name")?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm"
-                />
+
+            <div className="flex items-center py-4 justify-between">
+                <h1 className="text-4xl font-bold">Marvel Characters</h1>
                 <SearchInput
                     placeholder="Filter names..."
                 />
             </div>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="ml-auto">
-                        Columns
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    {table
-                        .getAllColumns()
-                        .filter(
-                            (column) => column.getCanHide()
-                        )
-                        .map((column) => {
-                            return (
-                                <DropdownMenuCheckboxItem
-                                    key={column.id}
-                                    className="capitalize"
-                                    checked={column.getIsVisible()}
-                                    onCheckedChange={(value) =>
-                                        column.toggleVisibility(!!value)
-                                    }
-                                >
-                                    {column.id}
-                                </DropdownMenuCheckboxItem>
-                            )
-                        })}
-                </DropdownMenuContent>
-            </DropdownMenu>
-            <div className="rounded-md border">
+            <div className="rounded-md border mb-4 max-h-[650px] overflow-y-auto overflow-x-auto">
                 <Table>
-                    <TableHeader>
+                    <TableHeader >
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
