@@ -1,50 +1,94 @@
 'use client'
 
-import { Button } from "@/components/ui/button"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react"
+import { Table } from "@tanstack/react-table"
+import { ButtonPagination } from "./button-pagination"
 
 interface DataTablePaginationProps {
+    table: Table<any>
+    totalPages: number
 }
-
-interface ButtonPaginationProps {
-    variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | null | undefined
-    className?: string
-    onClick: () => void
-    children: React.ReactNode
-}
-
-const ButtonPagination = ({ variant = "ghost", className = "p-2 px-3", onClick, children }: ButtonPaginationProps) => (
-    <Button
-        variant={variant}
-        className={className}
-        onClick={onClick}
-    >
-        {children}
-    </Button>
-)
 
 export function DataTablePagination({
+    table,
+    totalPages
 }: DataTablePaginationProps) {
     const searchParams = useSearchParams()
     const pathname = usePathname()
     const { replace } = useRouter()
+    const currentPage = Number(searchParams.get('page')) || 1
+
+    function handlePreviousPage() {
+        const newSearchParams = new URLSearchParams(searchParams);
+        newSearchParams.set('page', String(currentPage - 1))
+        const newUrl = `${pathname}?${newSearchParams.toString()}`;
+        replace(newUrl)
+        table.previousPage()
+    }
+
+    function handleNextPage() {
+        const newSearchParams = new URLSearchParams(searchParams);
+        newSearchParams.set('page', String(currentPage + 1))
+        const newUrl = `${pathname}?${newSearchParams.toString()}`;
+        replace(newUrl)
+        table.nextPage()
+    }
+
     return (
         <div className="flex justify-center">
             <div className="flex items-center space-x-2 self-center">
                 <ButtonPagination
-                    onClick={() => replace(`${pathname}?offset=${Number(searchParams.get('offset')) - 10}`)}
+                    onClick={handlePreviousPage}
+                    disabled={!table.getCanPreviousPage()}
                 >
                     <span className="flex items-center">
                         <IconChevronLeft size={14} stroke={2} />
                         Previous
                     </span>
                 </ButtonPagination>
-                <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-                    Page {Number(searchParams.get('offset')) + 1}
-                </div>
+
+                {
+                    Array.from({ length: totalPages }, (_, i) => {
+
+                        if (totalPages == i) {
+                            return (
+                                <ButtonPagination
+                                    key={i}
+                                    onClick={() => {
+                                        const newSearchParams = new URLSearchParams(searchParams)
+                                        newSearchParams.set('page', String(i + 1))
+                                        const newUrl = `${pathname}?${newSearchParams.toString()}`
+                                        replace(newUrl)
+                                        table.setPageIndex(i)
+                                    }}
+                                    className="bg-red-600 "
+                                >
+                                    {i + 1}
+                                </ButtonPagination>
+                            )
+                        }
+
+                        return (
+                            <ButtonPagination
+                                key={i}
+                                onClick={() => {
+                                    const newSearchParams = new URLSearchParams(searchParams)
+                                    newSearchParams.set('page', String(i + 1))
+                                    const newUrl = `${pathname}?${newSearchParams.toString()}`
+                                    replace(newUrl)
+                                    table.setPageIndex(i)
+                                }}
+                            >
+                                {i + 1}
+                            </ButtonPagination>
+                        )
+                    })
+                }
+
                 <ButtonPagination
-                    onClick={() => replace(`${pathname}?offset=${Number(searchParams.get('offset')) + 10}`)}
+                    onClick={handleNextPage}
+                    disabled={!table.getCanNextPage()}
                 >
                     <span className="flex items-center">
                         Next

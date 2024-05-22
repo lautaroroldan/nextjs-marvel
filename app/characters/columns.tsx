@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { z } from "zod"
 import { IconBook2, IconClock, IconStar } from '@tabler/icons-react';
+import Link from "next/link";
 
 const Comic = z.object({
     available: z.number(),
@@ -61,10 +62,10 @@ const Character = z.object({
         url: z.string(),
     })),
     thumbnail: Thumbnail,
-    comics: z.array(Comic),
-    stories: z.array(Story),
-    events: z.array(Event),
-    series: z.array(Serie),
+    comics: Comic,
+    stories: Story,
+    events: Event,
+    series: Serie,
 })
 
 export type Event = z.infer<typeof Event>
@@ -127,6 +128,18 @@ export const columns: ColumnDef<Character>[] = [
                 <IconStar stroke={2} />
                 {events.available}
             </div>
+        }
+    },
+    {
+        accessorKey: "id",
+        header: "INFO",
+        cell: ({ row }) => {
+            const id = row.getValue("id")
+            return (
+                <Link href={`/characters/${id}`}>
+                    Info
+                </Link>
+            )
         }
     }
 ]

@@ -4,11 +4,8 @@ import {
     ColumnDef,
     flexRender,
     getCoreRowModel,
-    getPaginationRowModel,
     useReactTable,
-    ColumnFiltersState,
     getFilteredRowModel,
-    VisibilityState,
 } from "@tanstack/react-table"
 
 import {
@@ -20,37 +17,33 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
-import { useState } from "react"
 import { DataTablePagination } from "./table-pagination"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import SearchInput from "./input-search"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
+    pagination: {
+        totalResults: number
+        totalPages: number
+        actualPage: number
+    }
 }
 
 
 export function DataTable<TData, TValue>({
     columns,
     data,
+    pagination
 }: DataTableProps<TData, TValue>) {
-    const [characters, setCharacters] = useState([])
-    const searchParams = useSearchParams()
-    const pathname = usePathname()
-    const { replace } = useRouter()
-
-    const [totalResults, setTotalResults] = useState(0)
-    const [totalPages, setTotalPages] = useState(0)
 
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
         manualPagination: true,
         getFilteredRowModel: getFilteredRowModel(),
-        pageCount: totalPages,
+        rowCount: pagination.totalResults,
     })
 
     return (
@@ -62,7 +55,7 @@ export function DataTable<TData, TValue>({
                     placeholder="Filter names..."
                 />
             </div>
-            <div className="rounded-md border mb-4 max-h-[650px] overflow-y-auto overflow-x-auto">
+            <div className="rounded-md border mb-4 overflow-y-auto overflow-x-auto">
                 <Table>
                     <TableHeader >
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -106,7 +99,7 @@ export function DataTable<TData, TValue>({
                     </TableBody>
                 </Table>
             </div>
-            <DataTablePagination />
+            <DataTablePagination table={table} totalPages={pagination.totalPages} />
         </div >
     )
 }
