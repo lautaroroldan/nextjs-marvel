@@ -4,6 +4,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react"
 import { Table } from "@tanstack/react-table"
 import { ButtonPagination } from "./button-pagination"
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 
 interface DataTablePaginationProps {
     table: Table<any>
@@ -50,8 +51,7 @@ export function DataTablePagination({
 
                 {
                     Array.from({ length: totalPages }, (_, i) => {
-
-                        if (totalPages == i) {
+                        if (currentPage == i + 1) {
                             return (
                                 <ButtonPagination
                                     key={i}
@@ -62,27 +62,29 @@ export function DataTablePagination({
                                         replace(newUrl)
                                         table.setPageIndex(i)
                                     }}
-                                    className="bg-red-600 "
+                                    className="bg-accent "
                                 >
                                     {i + 1}
                                 </ButtonPagination>
                             )
                         }
-
-                        return (
-                            <ButtonPagination
-                                key={i}
-                                onClick={() => {
-                                    const newSearchParams = new URLSearchParams(searchParams)
-                                    newSearchParams.set('page', String(i + 1))
-                                    const newUrl = `${pathname}?${newSearchParams.toString()}`
-                                    replace(newUrl)
-                                    table.setPageIndex(i)
-                                }}
-                            >
-                                {i + 1}
-                            </ButtonPagination>
-                        )
+                        if (i + 1 <= currentPage + 2 && i + 1 >= currentPage - 2) {
+                            return (
+                                <ButtonPagination
+                                    key={i}
+                                    onClick={() => {
+                                        const newSearchParams = new URLSearchParams(searchParams)
+                                        newSearchParams.set('page', String(i + 1))
+                                        const newUrl = `${pathname}?${newSearchParams.toString()}`
+                                        replace(newUrl)
+                                        table.setPageIndex(i)
+                                    }}
+                                >
+                                    {i + 1}
+                                </ButtonPagination>
+                            )
+                        }
+                        return
                     })
                 }
 

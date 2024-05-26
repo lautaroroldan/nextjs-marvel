@@ -48,7 +48,7 @@ async function CharacterInfo({
                 </p>
                 <div className="grid gap-2">
                     <h2 className="text-xl font-semibold">Appearances</h2>
-                    <ul className="space-y-1 text-sm text-gray-500 dark:text-gray-400 max-h-[250px] overflow-y-auto">
+                    <ul className="space-y-1 text-sm text-gray-500 dark:text-gray-400 max-h-[250px] overflow-y-auto text-left">
                         {character[0].comics.items.map((comic) => (
                             <li key={comic.resourceURI}>
                                 {comic.name}
