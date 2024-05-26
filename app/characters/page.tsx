@@ -1,6 +1,13 @@
 import { getAllCharacters } from "@/components/services/Character"
 import { Character, columns } from "./columns"
 import { DataTable } from "../data-table"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+    title: 'Marvel Characters',
+    description: 'Marvel Characters from the Marvel API.',
+}
+
 export default async function CharactersPage({
     searchParams,
 }: {

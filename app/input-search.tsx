@@ -15,9 +15,11 @@ export default function SearchInput({ placeholder }: { placeholder: string }) {
         const params = new URLSearchParams(searchParams)
         if (e) {
             params.set('query', e)
+            params.set('page', '1')
         }
         else {
             params.delete('query')
+            params.delete('page')
         }
         replace(`${pathName}?${params.toString()}`)
     }, DEBOUNCE_TIME)

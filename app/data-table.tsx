@@ -57,7 +57,7 @@ export function DataTable<TData, TValue>({
             </div>
             <div className="rounded-md border mb-4 overflow-y-auto overflow-x-auto">
                 <Table>
-                    <TableHeader >
+                    <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
@@ -98,8 +98,8 @@ export function DataTable<TData, TValue>({
                         )}
                     </TableBody>
                 </Table>
+                <DataTablePagination table={table} totalPages={pagination.totalPages} />
             </div>
-            <DataTablePagination table={table} totalPages={pagination.totalPages} />
         </div >
     )
 }

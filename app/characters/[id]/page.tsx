@@ -1,5 +1,19 @@
 import { getCharacterById } from '@/components/services/Character'
+import { Metadata, ResolvingMetadata } from 'next'
 import React from 'react'
+
+export async function generateMetadata(
+    { params, searchParams }: { params: { id: string }; searchParams: URLSearchParams },
+    parent: ResolvingMetadata
+): Promise<Metadata> {
+
+    const id = Number(params?.id)
+    const { results: character } = await (await getCharacterById(id)).data
+
+    return {
+        title: character[0].name,
+    }
+}
 
 async function CharacterInfo({
     params,
