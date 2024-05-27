@@ -1,14 +1,9 @@
-import { getAllCharacters } from "@/components/services/Character"
-import { Character, columns } from "./columns"
+import { getAllComics } from "@/components/services/Comics"
 import { DataTable } from "../data-table"
-import { Metadata } from "next"
+import { columns } from "./columns"
 
-export const metadata: Metadata = {
-    title: 'Marvel Characters',
-    description: 'Marvel Characters from the Marvel API.',
-}
 
-export default async function CharactersPage({
+export default async function Page({
     searchParams,
 }: {
     searchParams?: {
@@ -19,15 +14,15 @@ export default async function CharactersPage({
     const currentPage = searchParams?.page || 1
     const queryText = searchParams?.query || ""
     const PAGE_SIZE = 20
-    const data = await getAllCharacters({
-        nameStartsWith: queryText,
+    const data = await getAllComics({
+        titleStartsWith: queryText,
         offset: (Number(currentPage) - 1) * PAGE_SIZE,
         limit: PAGE_SIZE,
     })
 
     return (
         <div className="mx-auto">
-            <DataTable title="Marvel Characters" columns={columns} data={data.data.results} pagination={{
+            <DataTable title="Marvel Comics" columns={columns} data={data.data.results} pagination={{
                 totalResults: data.data.total,
                 totalPages: Math.ceil(data.data.total / data.data.limit),
                 actualPage: data.data.offset / data.data.limit + 1,

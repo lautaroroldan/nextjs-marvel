@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { z } from "zod"
-import { IconBook2, IconClock, IconStar } from '@tabler/icons-react';
+import { IconBook2, IconClock, IconInfoCircle, IconStar } from '@tabler/icons-react';
 import Link from "next/link";
 
 const Comic = z.object({
@@ -46,9 +46,14 @@ const Serie = z.object({
     })),
 })
 
-const Thumbnail = z.object({
+export const Thumbnail = z.object({
     path: z.string(),
     extension: z.string(),
+})
+
+export const Url = z.object({
+    type: z.string(),
+    url: z.string(),
 })
 
 const Character = z.object({
@@ -57,10 +62,7 @@ const Character = z.object({
     description: z.string(),
     modified: z.date(),
     resourceURI: z.string(),
-    urls: z.array(z.object({
-        type: z.string(),
-        url: z.string(),
-    })),
+    urls: z.array(Url),
     thumbnail: Thumbnail,
     comics: Comic,
     stories: Story,
@@ -132,12 +134,12 @@ export const columns: ColumnDef<Character>[] = [
     },
     {
         accessorKey: "id",
-        header: "INFO",
+        header: "Info",
         cell: ({ row }) => {
             const id = row.getValue("id")
             return (
                 <Link href={`/characters/${id}`}>
-                    Info
+                    <IconInfoCircle stroke={2} />
                 </Link>
             )
         }

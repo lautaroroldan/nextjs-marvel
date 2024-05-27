@@ -21,6 +21,7 @@ import { DataTablePagination } from "./table-pagination"
 import SearchInput from "./input-search"
 
 interface DataTableProps<TData, TValue> {
+    title: string,
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
     pagination: {
@@ -32,6 +33,7 @@ interface DataTableProps<TData, TValue> {
 
 
 export function DataTable<TData, TValue>({
+    title,
     columns,
     data,
     pagination
@@ -50,7 +52,7 @@ export function DataTable<TData, TValue>({
         <div>
 
             <div className="flex items-center py-4 justify-between">
-                <h1 className="text-4xl font-bold">Marvel Characters</h1>
+                <h1 className="text-4xl font-bold">{title}</h1>
                 <SearchInput
                     placeholder="Filter names..."
                 />
